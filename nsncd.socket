@@ -1,0 +1,9 @@
+[Unit]
+PartOf=nsncd.service
+
+[Socket]
+ListenStream=/var/run/nscd/socket
+SocketMode=0777
+
+[Install]
+WantedBy=sockets.target

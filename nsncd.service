@@ -14,6 +14,7 @@
 
 [Unit]
 Description=name-service non-caching daemon
+Requires=nsncd.socket
 
 [Service]
 ExecStart=/usr/lib/nsncd

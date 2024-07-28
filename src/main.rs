@@ -55,6 +55,7 @@ use anyhow::{Context, Result};
 use crossbeam_channel as channel;
 use sd_notify::NotifyState;
 use slog::{debug, error, o, Drain};
+use std::os::fd::{FromRawFd, IntoRawFd};
 
 mod config;
 mod ffi;
@@ -86,10 +87,37 @@ fn main() -> Result<()> {
     let mut wg = WorkGroup::new();
     let tx = spawn_workers(&mut wg, &logger, config);
 
-    std::fs::create_dir_all(path.parent().expect("socket path has no parent"))?;
-    std::fs::remove_file(path).ok();
-    let listener = UnixListener::bind(path).context("could not bind to socket")?;
-    std::fs::set_permissions(path, std::fs::Permissions::from_mode(0o777))?;
+    let listener = if let Ok(sockets_from_systemd) =
+        libsystemd::activation::receive_descriptors_with_names(false)
+    {
+        slog::info!(
+            logger,
+            "systemd socket activation";
+            "sockets_from_systemd" => ?sockets_from_systemd,
+        );
+
+        if sockets_from_systemd.len() != 1 {
+            anyhow::bail!(
+                "expected exactly one socket from systemd, got: {sockets_from_systemd:?}"
+            );
+        }
+
+        let (socket, name) = sockets_from_systemd.into_iter().next().unwrap();
+        if name != "nscd" {
+            anyhow::bail!("expected socket name to be 'nscd', got {name:?}");
+        }
+
+        unsafe { UnixListener::from_raw_fd(socket.into_raw_fd()) }
+    } else {
+        slog::info!(logger, "direct socket creation");
+
+        std::fs::create_dir_all(path.parent().expect("socket path has no parent"))?;
+        std::fs::remove_file(path).ok();
+        let listener = UnixListener::bind(path).context("could not bind to socket")?;
+        std::fs::set_permissions(path, std::fs::Permissions::from_mode(0o777))?;
+        listener
+    };
+
     spawn_acceptor(&mut wg, &logger, listener, tx, config.handoff_timeout);
 
     let _ = sd_notify::notify(true, &[NotifyState::Ready]);

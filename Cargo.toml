@@ -1,6 +1,6 @@
 [package]
 name = "nsncd"
-version = "1.4.1"
+version = "1.4.2-codyps.1"
 authors = [
     "Ben Linsay <ben.linsay@twosigma.com>",
     "Geoffrey Thomas <geoffrey.thomas@twosigma.com>",
@@ -15,16 +15,17 @@ license = "Apache-2.0"
 [dependencies]
 anyhow = "^1.0"
 atoi = "^2.0"
-slog = "^2.7"
-slog-async = "^2.8"
-slog-term = "^2.9"
 crossbeam-channel = "^0.5"
+dns-lookup = "2.0.4"
+libsystemd = "0.7.0"
 nix = { version = "^0.29", features = ["socket", "user"]}
 num-derive = "^0.4"
 num-traits = "^0.2"
 sd-notify = "^0.4"
+slog = "^2.7"
+slog-async = "^2.8"
+slog-term = "^2.9"
 static_assertions = "1.1.0"
-dns-lookup = "2.0.4"
 
 [dev-dependencies]
 criterion = "^0.5"

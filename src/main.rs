@@ -103,8 +103,8 @@ fn main() -> Result<()> {
         }
 
         let (socket, name) = sockets_from_systemd.into_iter().next().unwrap();
-        if name != "nscd" {
-            anyhow::bail!("expected socket name to be 'nscd', got {name:?}");
+        if name != "nsncd.socket" {
+            anyhow::bail!("expected socket name to be 'nsncd.socket', got {name:?}");
         }
 
         unsafe { UnixListener::from_raw_fd(socket.into_raw_fd()) }

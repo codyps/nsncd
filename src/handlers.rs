@@ -28,7 +28,7 @@ use nix::unistd::{getgrouplist, Gid, Group, Uid, User};
 use slog::{debug, error, Logger};
 use std::mem::size_of;
 
-use crate::ffi::{gethostbyaddr_r, gethostbyname2_r, Hostent, LibcIp, HostentError};
+use crate::ffi::{gethostbyaddr_r, gethostbyname2_r, Hostent, HostentError, LibcIp};
 use crate::protocol::{AiResponse, AiResponseHeader};
 
 use super::config::Config;

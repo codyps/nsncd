@@ -2,7 +2,7 @@
 PartOf=nsncd.service
 
 [Socket]
-ListenStream=/var/run/nscd/socket
+ListenStream=/run/nscd/socket
 SocketMode=0777
 
 [Install]

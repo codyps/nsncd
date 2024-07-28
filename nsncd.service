@@ -21,5 +21,33 @@ ExecStart=/usr/lib/nsncd
 Restart=always
 Type=notify
 
+CapabilityBoundingSet=""
+DynamicUser=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+NoNewPrivileges=yes
+PrivateDevices=yes
+PrivateMounts=yes
+PrivateNetwork=yes
+PrivateTmp=yes
+PrivateUsers=yes
+ProtectClock=yes
+ProtectControlGroups=yes
+ProtectHome=yes
+ProtectHostname=yes
+ProtectKernelLogs=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+ProtectProc=noaccess
+ProtectSystem=yes
+RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6
+RestrictNamespaces=yes
+RestrictRealtime=yes
+SystemCallArchitectures=native
+UMask=0000
+
+# Note: our slog config crashes when using `strict`
+DevicePolicy=closed
+
 [Install]
 WantedBy=multi-user.target
